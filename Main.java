@@ -254,15 +254,15 @@ public class Main {
                // Enviar para Delete no CRUD
                break;
             case 5:
-               CompressionUtility.compressFile("pokemonDB", "Huffman");
+               // CompressionUtility.compressFile("pokemonDB", "Huffman");
                // CompressionUtility.compressFile("pokemonDB", "LZW");
                break;
 
             case 6:
                System.out.println("Digite a versão de compressão que deseja descompactar:");
                int version = fetch.nextInt();
-               CompressionUtility.decompressFile("pokemonDB", "Huffman", version);
-               CompressionUtility.decompressFile("pokemonDB", "LZW", version);
+               // CompressionUtility.decompressFile("pokemonDB", "Huffman", version);
+               // CompressionUtility.decompressFile("pokemonDB", "LZW", version);x'
                break;
             case 7:
                // sair
