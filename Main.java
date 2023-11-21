@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+   public static int version = 0;
    public static void main(String args[]) throws IOException, ClassNotFoundException {
       Scanner fetch = new Scanner(System.in);
       CRUD crud = new CRUD("pokemonDB");

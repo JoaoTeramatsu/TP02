@@ -5,7 +5,6 @@ public class CompressionUtility {
 
     public static void compressFile(String inputFileName, String algorithm) throws IOException {
        if (algorithm.equalsIgnoreCase("Huffman")) {
-            // Read the input file
             byte[] fileData = readFile(inputFileName);
 
             // Calculate character frequencies
