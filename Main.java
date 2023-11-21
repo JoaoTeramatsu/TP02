@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -264,7 +266,7 @@ public class Main {
                // Huffman
                long iHuffComp = System.currentTimeMillis();
                try {
-                  String arquivo = new Scanner(new File("games.csv")).useDelimiter("\\\\Z").next();
+                  String arquivo = new Scanner(new File(basefile)).useDelimiter("\\\\Z").next();
                   // System.out.println(arquivo);
                   String compressedString = huffman.compress(arquivo);
                   huffman.writeCompressedFile(compressedString);
@@ -275,43 +277,85 @@ public class Main {
                }
                long fHuffComp = System.currentTimeMillis() - iHuffComp;
                System.out.println("Tempo de compressão Huffman: " + fHuffComp + "ms");
-               // LZW
-               long iLzwComp = System.currentTimeMillis();
-               try {
-                  String baseIncial = "BancoDados";
-                  String arqComprimido = "baseLzwCompressao" + version++;
-                  byte[] fileContent = Files.readAllBytes(Paths.get(baseIncial));
+               //// LZW ****
+               //  long iLzwComp = System.currentTimeMillis();
+               // try {
+                  // String baseIncial = "BancoDados";
+                  // String arqComprimido = "baseLzwCompressao" + version++;
+                  // byte[] fileContent = Files.readAllBytes(Paths.get(baseIncial));
                   // int[] compressed = LZW.compress(fileContent);
                   // byte[] compressedBytes = new byte[compressed.length * 2];
                   // for (int i = 0; i < compressed.length; i++) {
-                  //    compressedBytes[2 * i] = (byte) (compressed[i] >> 8);
-                  //    compressedBytes[2 * i + 1] = (byte) (compressed[i] & 0xFF);
+                  // compressedBytes[2 * i] = (byte) (compressed[i] >> 8);
+                  // compressedBytes[2 * i + 1] = (byte) (compressed[i] & 0xFF);
                   // }
                   // Files.write(Paths.get(arqComprimido), compressedBytes);
-                  System.out
-                        .println("Arquivo da sequência compactada gerado: baseLzwCompressao" + (version - 1) + ".txt");
-               } catch (Exception e) {
-                  System.out.println("Erro na compressão LZW");
-               }
-               long fLzwComp = System.currentTimeMillis() - iLzwComp;
-               System.out.println("Tempo de compressão LZW: " + fLzwComp + "ms");
-               if (fHuffComp < fLzwComp) {
-                  System.out.print("Compressão Huffman foi ");
-                  System.out.printf("%.2f ", (1.0 - ((float) fHuffComp / (float) fLzwComp)) * 100);
-                  System.out.println("% mais eficiente");
-               } else {
-                  System.out.print("Compressão LZW foi ");
-                  System.out.printf("%.2f " + (1.0 - ((float) fLzwComp / (float) fHuffComp)) * 100);
-                  System.out.println("% mais eficiente");
-               }
-               System.out.println("\nArquivo comprimido com sucesso!");
+               //    System.out
+               //          .println("Arquivo da sequência compactada gerado: baseLzwCompressao" + (version - 1) + ".txt");
+               // } catch (Exception e) {
+               //    System.out.println("Erro na compressão LZW");
+               // }
+               // long fLzwComp = System.currentTimeMillis() - iLzwComp;
+               // System.out.println("Tempo de compressão LZW: " + fLzwComp + "ms");
+               // if (fHuffComp < fLzwComp) {
+               //    System.out.print("Compressão Huffman foi ");
+               //    System.out.printf("%.2f ", (1.0 - ((float) fHuffComp / (float) fLzwComp)) * 100);
+               //    System.out.println("% mais eficiente");
+               // } else {
+               //    System.out.print("Compressão LZW foi ");
+               //    System.out.printf("%.2f " + (1.0 - ((float) fLzwComp / (float) fHuffComp)) * 100);
+               //    System.out.println("% mais eficiente");
+               // }
+               // System.out.println("\nArquivo comprimido com sucesso!");
                break;
 
             case 6:
-               System.out.println("Digite a versão de compressão que deseja descompactar:");
-               int version = fetch.nextInt();
-               // CompressionUtility.decompressFile("pokemonDB", "Huffman", version);
-               // CompressionUtility.decompressFile("pokemonDB", "LZW", version);x'
+               System.out.print("Qual a versão do arquivo que deseja descomprimir? ");
+               int versao = fetch.nextInt();
+               System.out.println("Descomprimindo arquivo...\n");
+               // Descomprimir arquivo da versão escolhida
+               // Huffman
+               long iHuffDesc = System.currentTimeMillis();
+               try {
+                  String readString = huffman.readCompressedFile(versao);
+                  String decompressedString = huffman.decompress(readString);
+                  FileWriter fw = new FileWriter("baseHuffmanCompressao" + versao + ".txt");
+                  BufferedWriter writer = new BufferedWriter(fw);
+                  writer.write(decompressedString);
+                  writer.close();
+               } catch (Exception e) {
+                  System.out.println("Erro na descompressão Huffman");
+               }
+               long fHuffDesc = System.currentTimeMillis() - iHuffDesc;
+               System.out.println("Tempo de descompressão Huffman: " + fHuffDesc + "ms");
+               // LZW
+               long iLzwDesc = System.currentTimeMillis();
+               try {
+                  String fileName = "baseLzwCompressao" + versao;
+                  byte[] compressedFileContent = Files.readAllBytes(Paths.get(fileName));
+                  int[] compressedData = new int[compressedFileContent.length / 2];
+                  for (int i = 0; i < compressedData.length; i++) {
+                     compressedData[i] = ((compressedFileContent[2 * i] & 0xFF) << 8)
+                           | (compressedFileContent[2 * i + 1] & 0xFF);
+                  }
+
+                  // byte[] decompressed = LZW.decompress(compressedData);
+                  // Files.write(Paths.get(fileName), decompressed);
+               } catch (Exception e) {
+                  System.out.println("Erro na descompressão LZW");
+               }
+               long fLzwDesc = System.currentTimeMillis() - iLzwDesc;
+               System.out.println("Tempo de descompressão LZW: " + fLzwDesc + "ms");
+               if (fHuffDesc < fLzwDesc) {
+                  System.out.print("Descompressão Huffman foi ");
+                  System.out.printf("%.2f " + (1.0 - ((float) fHuffDesc / (float) fLzwDesc)) * 100);
+                  System.out.println("% mais eficiente");
+               } else {
+                  System.out.print("Descompressão LZW foi ");
+                  System.out.printf("%.2f ", (1.0 - ((float) fLzwDesc / (float) fHuffDesc)) * 100);
+                  System.out.println("% mais eficiente");
+               }
+               System.out.println("\nArquivo descomprimido com sucesso!");
                break;
             case 7:
                // sair
@@ -321,4 +365,5 @@ public class Main {
       }
       fetch.close();
    }
+
 }

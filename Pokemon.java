@@ -91,8 +91,8 @@ class Pokemon {
     }
 
     public long getReleaseDate() {
-        System.out.println(this.releaseDate);
-        System.out.println(this.releaseDate.getTime());
+        // System.out.println(this.releaseDate);
+        // System.out.println(this.releaseDate.getTime());
         return this.releaseDate.getTime();
     }
 
@@ -118,7 +118,7 @@ class Pokemon {
         this.setHiddenAbility(cells[5]);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            System.out.println(format.parse(cells[6]));
+            // System.out.println(format.parse(cells[6]));
             this.setReleaseDate(format.parse(cells[6]));
         } catch (Exception e) {
             System.out.println(e);
@@ -167,13 +167,13 @@ class Pokemon {
         dos.writeLong(getReleaseDate());
         dos.writeInt(getTypes().size());
         for (String type : getTypes()) {
-            System.out.println(type);
+            // System.out.println(type);
             dos.writeInt(type.getBytes(Charset.forName("UTF-8")).length);
             dos.writeUTF(type);
         }
         dos.writeInt(getAbilities().size());
         for (String abilities : getAbilities()) {
-            System.out.println(abilities);
+            // System.out.println(abilities);
             dos.writeInt(abilities.getBytes(Charset.forName("UTF-8")).length);
             dos.writeUTF(abilities);
         }
