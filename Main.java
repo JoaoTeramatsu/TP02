@@ -1,18 +1,23 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
    public static int version = 0;
+
    public static void main(String args[]) throws IOException, ClassNotFoundException {
       Scanner fetch = new Scanner(System.in);
       CRUD crud = new CRUD("pokemonDB");
       String basefile = "pokemonSample.csv";
+      HuffmanCoding huffman = new HuffmanCoding();
       System.out.println("Deseja carregar o arquivo?");
       System.out.println("1-Sim \n2-Nao");
 
@@ -81,7 +86,7 @@ public class Main {
                      System.out.println("Ex: Fire, Rock");
                      String typesStr = fetch.nextLine();
                      String[] types = typesStr.split(",");
-                     ArrayList<String> typesAL = new ArrayList();
+                     ArrayList<String> typesAL = new ArrayList<String>();
                      for (int i = 0; i < types.length; i++) {
                         typesAL.add(types[i]);
                      }
@@ -90,7 +95,7 @@ public class Main {
                      System.out.println("Keen Eye, Tangled Feet");
                      String abilitiesStr = fetch.nextLine();
                      String[] abilities = abilitiesStr.split(",");
-                     ArrayList<String> abilitiesAL = new ArrayList();
+                     ArrayList<String> abilitiesAL = new ArrayList<String>();
                      for (int i = 0; i < abilities.length; i++) {
                         abilitiesAL.add(types[i]);
                      }
@@ -200,7 +205,7 @@ public class Main {
                System.out.println("Ex: Fire, Rock");
                String typesStr = fetch.nextLine();
                String[] types = typesStr.split(",");
-               ArrayList<String> typesAL = new ArrayList();
+               ArrayList<String> typesAL = new ArrayList<String>();
                for (int i = 0; i < types.length; i++) {
                   typesAL.add(types[i]);
                }
@@ -209,7 +214,7 @@ public class Main {
                System.out.println("Keen Eye, Tangled Feet");
                String abilitiesStr = fetch.nextLine();
                String[] abilities = abilitiesStr.split(",");
-               ArrayList<String> abilitiesAL = new ArrayList();
+               ArrayList<String> abilitiesAL = new ArrayList<String>();
                for (int i = 0; i < abilities.length; i++) {
                   abilitiesAL.add(types[i]);
                }
@@ -254,8 +259,52 @@ public class Main {
                // Enviar para Delete no CRUD
                break;
             case 5:
-               // CompressionUtility.compressFile("pokemonDB", "Huffman");
-               // CompressionUtility.compressFile("pokemonDB", "LZW");
+               System.out.println("Comprimindo arquivo...\n");
+               // Comprimir arquivos
+               // Huffman
+               long iHuffComp = System.currentTimeMillis();
+               try {
+                  String arquivo = new Scanner(new File("games.csv")).useDelimiter("\\\\Z").next();
+                  // System.out.println(arquivo);
+                  String compressedString = huffman.compress(arquivo);
+                  huffman.writeCompressedFile(compressedString);
+                  System.out.println(
+                        "Arquivo da sequência compactada gerado: baseHuffmanCompressao" + Main.version + ".txt");
+               } catch (Exception e) {
+                  System.out.println("Erro na compressão Huffman");
+               }
+               long fHuffComp = System.currentTimeMillis() - iHuffComp;
+               System.out.println("Tempo de compressão Huffman: " + fHuffComp + "ms");
+               // LZW
+               long iLzwComp = System.currentTimeMillis();
+               try {
+                  String baseIncial = "BancoDados";
+                  String arqComprimido = "baseLzwCompressao" + version++;
+                  byte[] fileContent = Files.readAllBytes(Paths.get(baseIncial));
+                  // int[] compressed = LZW.compress(fileContent);
+                  // byte[] compressedBytes = new byte[compressed.length * 2];
+                  // for (int i = 0; i < compressed.length; i++) {
+                  //    compressedBytes[2 * i] = (byte) (compressed[i] >> 8);
+                  //    compressedBytes[2 * i + 1] = (byte) (compressed[i] & 0xFF);
+                  // }
+                  // Files.write(Paths.get(arqComprimido), compressedBytes);
+                  System.out
+                        .println("Arquivo da sequência compactada gerado: baseLzwCompressao" + (version - 1) + ".txt");
+               } catch (Exception e) {
+                  System.out.println("Erro na compressão LZW");
+               }
+               long fLzwComp = System.currentTimeMillis() - iLzwComp;
+               System.out.println("Tempo de compressão LZW: " + fLzwComp + "ms");
+               if (fHuffComp < fLzwComp) {
+                  System.out.print("Compressão Huffman foi ");
+                  System.out.printf("%.2f ", (1.0 - ((float) fHuffComp / (float) fLzwComp)) * 100);
+                  System.out.println("% mais eficiente");
+               } else {
+                  System.out.print("Compressão LZW foi ");
+                  System.out.printf("%.2f " + (1.0 - ((float) fLzwComp / (float) fHuffComp)) * 100);
+                  System.out.println("% mais eficiente");
+               }
+               System.out.println("\nArquivo comprimido com sucesso!");
                break;
 
             case 6:
