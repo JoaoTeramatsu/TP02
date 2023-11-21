@@ -3,6 +3,8 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -255,6 +257,23 @@ public class Main {
             case 5:
                CompressionUtility.compressFile("pokemonDB", "Huffman");
                // CompressionUtility.compressFile("pokemonDB", "LZW");
+               // LZW
+               long iLzwDesc = System.currentTimeMillis();
+               try {
+                   String fileName = "baseLzwCompressao";
+                   byte[] compressedFileContent = Files.readAllBytes(Paths.get(fileName));
+                   int[] compressedData = new int[compressedFileContent.length / 2];
+                   for (int i = 0; i < compressedData.length; i++) {
+                       compressedData[i] = ((compressedFileContent[2 * i] & 0xFF) << 8) | (compressedFileContent[2 * i + 1] & 0xFF);
+                   }
+
+                   byte[] decompressed = LZW.decompress(compressedData);
+                   Files.write(Paths.get(fileName), decompressed);
+               } catch (Exception e){
+                   System.out.println("Erro na descompressão LZW");
+               }
+               long fLzwDesc = System.currentTimeMillis()-iLzwDesc;
+               System.out.println("Tempo de descompressão LZW: "+fLzwDesc+"ms");
                break;
 
             case 6:
