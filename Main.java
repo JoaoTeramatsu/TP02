@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -17,6 +19,7 @@ public class Main {
       Scanner fetch = new Scanner(System.in);
       CRUD crud = new CRUD("pokemonDB");
       String basefile = "pokemonSample.csv";
+      HuffmanCoding huffman = new HuffmanCoding();
       System.out.println("Deseja carregar o arquivo?");
       System.out.println("1-Sim \n2-Nao");
       try {
@@ -82,7 +85,7 @@ public class Main {
                      System.out.println("Ex: Fire, Rock");
                      String typesStr = fetch.nextLine();
                      String[] types = typesStr.split(",");
-                     ArrayList<String> typesAL = new ArrayList();
+                     ArrayList<String> typesAL = new ArrayList<String>();
                      for (int i = 0; i < types.length; i++) {
                         typesAL.add(types[i]);
                      }
@@ -91,7 +94,7 @@ public class Main {
                      System.out.println("Keen Eye, Tangled Feet");
                      String abilitiesStr = fetch.nextLine();
                      String[] abilities = abilitiesStr.split(",");
-                     ArrayList<String> abilitiesAL = new ArrayList();
+                     ArrayList<String> abilitiesAL = new ArrayList<String>();
                      for (int i = 0; i < abilities.length; i++) {
                         abilitiesAL.add(types[i]);
                      }
@@ -101,9 +104,6 @@ public class Main {
                      System.out.println(line);
                      pokemon.parseCSV(line);
                      crud.create(pokemon);
-                     // long pos = crud.getIndex(pokemon);
-                     // listaGeneros.addDocument((int) pos, mus.getGenres());
-                     // listaNomes.addDocument((int) pos, mus.getReleaseName());
                      System.out.println("\nArquivo atualizado!\n");
 
                      System.out.print(
@@ -201,7 +201,7 @@ public class Main {
                System.out.println("Ex: Fire, Rock");
                String typesStr = fetch.nextLine();
                String[] types = typesStr.split(",");
-               ArrayList<String> typesAL = new ArrayList();
+               ArrayList<String> typesAL = new ArrayList<String>();
                for (int i = 0; i < types.length; i++) {
                   typesAL.add(types[i]);
                }
@@ -210,12 +210,12 @@ public class Main {
                System.out.println("Keen Eye, Tangled Feet");
                String abilitiesStr = fetch.nextLine();
                String[] abilities = abilitiesStr.split(",");
-               ArrayList<String> abilitiesAL = new ArrayList();
+               ArrayList<String> abilitiesAL = new ArrayList<String>();
                for (int i = 0; i < abilities.length; i++) {
                   abilitiesAL.add(types[i]);
                }
                Pokemon pokemon = new Pokemon();
-               String line = pokedexID + "," + pokedexID + "," + pokemonName + "," + gen + "," + specie + ","
+               String line = updateID + "," + pokedexID + "," + pokemonName + "," + gen + "," + specie + ","
                      + hiddenAbility + "," + date + ",\"" + typesStr + "\"," + "\"" + abilitiesStr + "\"";
                System.out.println(line);
                pokemon.parseCSV(line);
@@ -255,13 +255,30 @@ public class Main {
                // Enviar para Delete no CRUD
                break;
             case 5:
-               String inputFileName = "pokemonDB";
 
-               // Huffman Compression
-               long huffmanCompressStart = System.currentTimeMillis();
-               File pokemonDB = new File("./pokemonDB");
-               byte[] bytes = Files.readAllBytes(pokemonDB.toPath());
-               HuffmanCompression.compress(bytes);
+               System.out.println("Comprimindo arquivo...\n");
+               // Comprimir arquivos
+               // Huffman
+               long iHuffComp = System.currentTimeMillis();
+               try {
+                  String arquivo = new Scanner(new File(basefile)).useDelimiter("\\\\Z").next();
+                  // System.out.println(arquivo);
+                  String compressedString = huffman.compress(arquivo);
+                  huffman.writeCompressedFile(compressedString);
+                  System.out.println(
+                        "Arquivo da sequência compactada gerado: baseHuffmanCompressao" + Main.version + ".txt");
+               } catch (Exception e) {
+                  System.out.println("Erro na compressão Huffman");
+               }
+               long fHuffComp = System.currentTimeMillis() - iHuffComp;
+               System.out.println("Tempo de compressão Huffman: " + fHuffComp + "ms");
+
+
+               // // Huffman Compression
+               // long huffmanCompressStart = System.currentTimeMillis();
+               // File pokemonDB = new File("./pokemonDB");
+               // byte[] bytes = Files.readAllBytes(pokemonDB.toPath());
+               // HuffmanCompression.compress(bytes);
 
                /*
                 * ----------------- //
@@ -288,36 +305,74 @@ public class Main {
                 */
                break;
             case 6:
+
+//                try {
+//                   String compressedString = HuffmanCompression.readCompressedFile(0);
+//                   byte[] decompressedData = HuffmanCompression.decompress(compressedString);
+//                   Files.write(Paths.get("baseHuffmanDecompressao" + 0 + ".txt"), decompressedData);
+//                   System.out.println("Arquivo da sequência descompactada gerado: baseHuffmanDecompressao" + 0 + ".txt");
+//                   // CompressionUtility.decompressFile("pokemonDB", "LZW", version);
+//                } catch (Exception e) {
+//                   System.out.println("Erro na descompressão Huffman");
+//                   // TODO: handle exception
+//                }
+//                // byte[] decompressed = LZW.decompress(compressedData);
+//                // Files.write(Paths.get(fileName), decompressed);
+
+               System.out.print("Qual a versão do arquivo que deseja descomprimir? ");
+               int versao = fetch.nextInt();
+               System.out.println("Descomprimindo arquivo...\n");
+               // Descomprimir arquivo da versão escolhida
+               // Huffman
+               long iHuffDesc = System.currentTimeMillis();
                try {
-                  String compressedString = HuffmanCompression.readCompressedFile(0);
-                  byte[] decompressedData = HuffmanCompression.decompress(compressedString);
-                  Files.write(Paths.get("baseHuffmanDecompressao" + 0 + ".txt"), decompressedData);
-                  System.out.println("Arquivo da sequência descompactada gerado: baseHuffmanDecompressao" + 0 + ".txt");
-                  // CompressionUtility.decompressFile("pokemonDB", "LZW", version);
+                  String readString = huffman.readCompressedFile(versao);
+                  String decompressedString = huffman.decompress(readString);
+                  FileWriter fw = new FileWriter("baseHuffmanCompressao" + versao + ".txt");
+                  BufferedWriter writer = new BufferedWriter(fw);
+                  writer.write(decompressedString);
+                  writer.close();
                } catch (Exception e) {
                   System.out.println("Erro na descompressão Huffman");
-                  // TODO: handle exception
                }
-               // byte[] decompressed = LZW.decompress(compressedData);
-               // Files.write(Paths.get(fileName), decompressed);
+               long fHuffDesc = System.currentTimeMillis() - iHuffDesc;
+               System.out.println("Tempo de descompressão Huffman: " + fHuffDesc + "ms");
+               // LZW
+               long iLzwDesc = System.currentTimeMillis();
+               try {
+                  String fileName = "baseLzwCompressao" + versao;
+                  byte[] compressedFileContent = Files.readAllBytes(Paths.get(fileName));
+                  int[] compressedData = new int[compressedFileContent.length / 2];
+                  for (int i = 0; i < compressedData.length; i++) {
+                     compressedData[i] = ((compressedFileContent[2 * i] & 0xFF) << 8)
+                           | (compressedFileContent[2 * i + 1] & 0xFF);
+                  }
+
+                  // byte[] decompressed = LZW.decompress(compressedData);
+                  // Files.write(Paths.get(fileName), decompressed);
+               } catch (Exception e) {
+                  System.out.println("Erro na descompressão LZW");
+               }
+               long fLzwDesc = System.currentTimeMillis() - iLzwDesc;
+               System.out.println("Tempo de descompressão LZW: " + fLzwDesc + "ms");
+               if (fHuffDesc < fLzwDesc) {
+                  System.out.print("Descompressão Huffman foi ");
+                  System.out.printf("%.2f " + (1.0 - ((float) fHuffDesc / (float) fLzwDesc)) * 100);
+                  System.out.println("% mais eficiente");
+               } else {
+                  System.out.print("Descompressão LZW foi ");
+                  System.out.printf("%.2f ", (1.0 - ((float) fLzwDesc / (float) fHuffDesc)) * 100);
+                  System.out.println("% mais eficiente");
+               }
+               System.out.println("\nArquivo descomprimido com sucesso!");
                break;
             case 7:
-               System.out.println("qual a versão do arquivo que deseja descomprimir?");
-               inputFileName = fetch.nextLine();
-               // Huffman Decompression
-               long huffmanDecompressStart = System.currentTimeMillis();
-               try {
-                  // HuffmanCompression.decompressFile(inputFileName, "Huffman", 0);
-               } catch (Exception e) {
-                  System.out.println("Error in Huffman decompression");
-               }
-               long huffmanDecompressTime = System.currentTimeMillis() - huffmanDecompressStart;
-               System.out.println("Huffman decompression time: " + huffmanDecompressTime + "ms");
-               // sair
+            
                break;
          }
 
       }
       fetch.close();
    }
+
 }

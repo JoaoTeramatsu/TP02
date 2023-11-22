@@ -91,8 +91,8 @@ class Pokemon {
     }
 
     public long getReleaseDate() {
-        System.out.println(this.releaseDate);
-        System.out.println(this.releaseDate.getTime());
+        // System.out.println(this.releaseDate);
+        // System.out.println(this.releaseDate.getTime());
         return this.releaseDate.getTime();
     }
 
@@ -118,7 +118,7 @@ class Pokemon {
         this.setHiddenAbility(cells[5]);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            System.out.println(format.parse(cells[6]));
+            // System.out.println(format.parse(cells[6]));
             this.setReleaseDate(format.parse(cells[6]));
         } catch (Exception e) {
             System.out.println(e);
@@ -156,25 +156,25 @@ class Pokemon {
         dos.writeBoolean(this.lapide);
         dos.writeInt(getIndex());
         dos.writeInt(getPokedexNum());
-        dos.writeInt(getName().getBytes(Charset.forName("UTF-8")).length);
+        // dos.writeInt(getName().getBytes(Charset.forName("UTF-8")).length);
         dos.writeUTF(getName());
-        dos.writeInt(getGeneration().getBytes(Charset.forName("UTF-8")).length);
+        // dos.writeInt(getGeneration().getBytes(Charset.forName("UTF-8")).length);
         dos.writeUTF(getGeneration());
-        dos.writeInt(getSpecie().getBytes(Charset.forName("UTF-8")).length);
+        // dos.writeInt(getSpecie().getBytes(Charset.forName("UTF-8")).length);
         dos.writeUTF(getSpecie());
-        dos.writeInt(getHiddenAbility().getBytes(Charset.forName("UTF-8")).length);
+        // dos.writeInt(getHiddenAbility().getBytes(Charset.forName("UTF-8")).length);
         dos.writeUTF(getHiddenAbility());
         dos.writeLong(getReleaseDate());
         dos.writeInt(getTypes().size());
         for (String type : getTypes()) {
-            System.out.println(type);
-            dos.writeInt(type.getBytes(Charset.forName("UTF-8")).length);
+            // System.out.println(type);
+            // dos.writeInt(type.getBytes(Charset.forName("UTF-8")).length);
             dos.writeUTF(type);
         }
         dos.writeInt(getAbilities().size());
         for (String abilities : getAbilities()) {
-            System.out.println(abilities);
-            dos.writeInt(abilities.getBytes(Charset.forName("UTF-8")).length);
+            // System.out.println(abilities);
+            // dos.writeInt(abilities.getBytes(Charset.forName("UTF-8")).length);
             dos.writeUTF(abilities);
         }
 
