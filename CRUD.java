@@ -30,7 +30,7 @@ public class CRUD {
    // return getPos(file, mus);
    // }
 
-   public long create(RandomAccessFile file, Pokemon pokemon) throws IOException {
+   public long create(Pokemon pokemon) throws IOException {
       file.seek(0);
       file.writeInt(pokemon.getIndex());
       file.seek(file.length());
@@ -84,9 +84,7 @@ public class CRUD {
       return getIndex(file, pokemon);
    }
 
-   public long create(Pokemon pokemon) throws IOException {
-      return create(this.file, pokemon);
-   }
+  
 
    public Pokemon Read(int entradaID) throws IOException {
       long pos;
@@ -188,25 +186,25 @@ public class CRUD {
       pokemon.lapide = file.readBoolean();
       pokemon.setIndex(file.readInt());
       pokemon.setPokedexNum(file.readInt());
-      file.readInt(); // pula tam. do nome
+      // file.readInt(); // pula tam. do nome
       pokemon.setName(file.readUTF());
-      file.readInt(); // pula tam. da geração
+      // file.readInt(); // pula tam. da geração
       pokemon.setGeneration(file.readUTF());
-      file.readInt(); // pula tam. da especie
+      // file.readInt(); // pula tam. da especie
       pokemon.setSpecie(file.readUTF());
-      file.readInt(); // pula tam. da hidden ability
+      // file.readInt(); // pula tam. da hidden ability
       pokemon.setHiddenAbility(file.readUTF());
       pokemon.setReleaseDate(file.readLong());
       String[] types = new String[file.readInt()];
       for (int i = 0; i < types.length; i++) {
-         file.readInt(); // pula tam. de cada tipo
+         // file.readInt(); // pula tam. de cada tipo
          types[i] = file.readUTF();
          typeArrList.add(types[i]);
       }
       pokemon.setTypes(typeArrList);
       String[] abilities = new String[file.readInt()];
       for (int i = 0; i < abilities.length; i++) {
-         file.readInt(); // pula tam. de cada habilidade
+         // file.readInt(); // pula tam. de cada habilidade
          abilitiesArrList.add(file.readUTF());
       }
       pokemon.setAbilities(abilitiesArrList);

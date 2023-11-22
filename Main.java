@@ -221,7 +221,7 @@ public class Main {
                   abilitiesAL.add(types[i]);
                }
                Pokemon pokemon = new Pokemon();
-               String line = pokedexID + "," + pokedexID + "," + pokemonName + "," + gen + "," + specie + ","
+               String line = updateID + "," + pokedexID + "," + pokemonName + "," + gen + "," + specie + ","
                      + hiddenAbility + "," + date + ",\"" + typesStr + "\"," + "\"" + abilitiesStr + "\"";
                System.out.println(line);
                pokemon.parseCSV(line);
