@@ -30,15 +30,18 @@ public class CRUD {
    // return getPos(file, mus);
    // }
 
-   public long create(RandomAccessFile file, Pokemon pokemon) throws IOException {
+   public void create(RandomAccessFile file, Pokemon pokemon) throws IOException {
       file.seek(0);
       file.writeInt(pokemon.getIndex());
       file.seek(file.length());
-      long pos = file.getFilePointer();
       byte[] byteArr = pokemon.toByteArray();
       file.writeInt(pokemon.toByteArray().length);
       file.write(byteArr);
-      return pos;
+      // return pos;
+   }
+
+   public void create(Pokemon pokemon) throws IOException {
+      create(this.file, pokemon);
    }
 
    public long getIndex(RandomAccessFile file, Pokemon pokemon) throws IOException {
@@ -82,10 +85,6 @@ public class CRUD {
 
    public long getIndex(Pokemon pokemon) throws IOException {
       return getIndex(file, pokemon);
-   }
-
-   public long create(Pokemon pokemon) throws IOException {
-      return create(this.file, pokemon);
    }
 
    public Pokemon Read(int entradaID) throws IOException {

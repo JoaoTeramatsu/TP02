@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,29 +11,28 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+   public static int version = 0;
+
    public static void main(String args[]) throws IOException, ClassNotFoundException {
       Scanner fetch = new Scanner(System.in);
       CRUD crud = new CRUD("pokemonDB");
       String basefile = "pokemonSample.csv";
       System.out.println("Deseja carregar o arquivo?");
       System.out.println("1-Sim \n2-Nao");
-
-      if (fetch.nextInt() == 1) {
-         try {
+      try {
+         if (fetch.nextInt() == 1) {
             FileInputStream fs = new FileInputStream(basefile);
             BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-
             String csvLine = br.readLine();
             while ((csvLine = br.readLine()) != null) {
                Pokemon pokemon = new Pokemon();
                pokemon.parseCSV(csvLine);
-               long pos = crud.create(pokemon);
-
+               crud.create(pokemon);
             }
             br.close();
-         } catch (IOException e) {
-            e.printStackTrace();
          }
+      } catch (Exception e) {
+         System.out.println("error");
       }
       int choice = 0;
       while (choice != 7) {
@@ -100,7 +100,7 @@ public class Main {
                            + hiddenAbility + "," + date + ",\"" + typesStr + "\"," + "\"" + abilitiesStr + "\"";
                      System.out.println(line);
                      pokemon.parseCSV(line);
-                     long pos = crud.create(pokemon);
+                     crud.create(pokemon);
                      // long pos = crud.getIndex(pokemon);
                      // listaGeneros.addDocument((int) pos, mus.getGenres());
                      // listaNomes.addDocument((int) pos, mus.getReleaseName());
@@ -255,34 +255,64 @@ public class Main {
                // Enviar para Delete no CRUD
                break;
             case 5:
-               CompressionUtility.compressFile("pokemonDB", "Huffman");
-               // CompressionUtility.compressFile("pokemonDB", "LZW");
-               // LZW
-               long iLzwDesc = System.currentTimeMillis();
-               try {
-                   String fileName = "baseLzwCompressao";
-                   byte[] compressedFileContent = Files.readAllBytes(Paths.get(fileName));
-                   int[] compressedData = new int[compressedFileContent.length / 2];
-                   for (int i = 0; i < compressedData.length; i++) {
-                       compressedData[i] = ((compressedFileContent[2 * i] & 0xFF) << 8) | (compressedFileContent[2 * i + 1] & 0xFF);
-                   }
+               String inputFileName = "pokemonDB";
 
-                   byte[] decompressed = LZW.decompress(compressedData);
-                   Files.write(Paths.get(fileName), decompressed);
-               } catch (Exception e){
-                   System.out.println("Erro na descompressão LZW");
-               }
-               long fLzwDesc = System.currentTimeMillis()-iLzwDesc;
-               System.out.println("Tempo de descompressão LZW: "+fLzwDesc+"ms");
+               // Huffman Compression
+               long huffmanCompressStart = System.currentTimeMillis();
+               File pokemonDB = new File("./pokemonDB");
+               byte[] bytes = Files.readAllBytes(pokemonDB.toPath());
+               HuffmanCompression.compress(bytes);
+
+               /*
+                * ----------------- //
+                * // "Código do gabigol"
+                * long iLzwDesc = System.currentTimeMillis();
+                * try {
+                * String fileName = "baseLzwCompressao";
+                * byte[] compressedFileContent = Files.readAllBytes(Paths.get(fileName));
+                * int[] compressedData = new int[compressedFileContent.length / 2];
+                * for (int i = 0; i < compressedData.length; i++) {
+                * compressedData[i] = ((compressedFileContent[2 * i] & 0xFF) << 8) |
+                * (compressedFileContent[2 * i + 1] & 0xFF);
+                * }
+                * 
+                * byte[] decompressed = LZW.decompress(compressedData);
+                * Files.write(Paths.get(fileName), decompressed);
+                * } catch (Exception e){
+                * System.out.println("Erro na descompressão LZW");
+                * }
+                * long fLzwDesc = System.currentTimeMillis()-iLzwDesc;
+                * System.out.println("Tempo de descompressão LZW: "+fLzwDesc+"ms");
+                * 
+                * break;
+                */
                break;
-
             case 6:
-               System.out.println("Digite a versão de compressão que deseja descompactar:");
-               int version = fetch.nextInt();
-               CompressionUtility.decompressFile("pokemonDB", "Huffman", version);
-               CompressionUtility.decompressFile("pokemonDB", "LZW", version);
+               try {
+                  String compressedString = HuffmanCompression.readCompressedFile(0);
+                  byte[] decompressedData = HuffmanCompression.decompress(compressedString);
+                  Files.write(Paths.get("baseHuffmanDecompressao" + 0 + ".txt"), decompressedData);
+                  System.out.println("Arquivo da sequência descompactada gerado: baseHuffmanDecompressao" + 0 + ".txt");
+                  // CompressionUtility.decompressFile("pokemonDB", "LZW", version);
+               } catch (Exception e) {
+                  System.out.println("Erro na descompressão Huffman");
+                  // TODO: handle exception
+               }
+               // byte[] decompressed = LZW.decompress(compressedData);
+               // Files.write(Paths.get(fileName), decompressed);
                break;
             case 7:
+               System.out.println("qual a versão do arquivo que deseja descomprimir?");
+               inputFileName = fetch.nextLine();
+               // Huffman Decompression
+               long huffmanDecompressStart = System.currentTimeMillis();
+               try {
+                  // HuffmanCompression.decompressFile(inputFileName, "Huffman", 0);
+               } catch (Exception e) {
+                  System.out.println("Error in Huffman decompression");
+               }
+               long huffmanDecompressTime = System.currentTimeMillis() - huffmanDecompressStart;
+               System.out.println("Huffman decompression time: " + huffmanDecompressTime + "ms");
                // sair
                break;
          }
