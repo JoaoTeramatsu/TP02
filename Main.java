@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -20,6 +21,7 @@ public class Main {
       CRUD crud = new CRUD("pokemonDB");
       String basefile = "pokemonSample.csv";
       HuffmanCoding huffman = new HuffmanCoding();
+      KMP kmp = new KMP();
       System.out.println("Deseja carregar o arquivo?");
       System.out.println("1-Sim \n2-Nao");
       try {
@@ -255,14 +257,12 @@ public class Main {
                // Enviar para Delete no CRUD
                break;
             case 5:
-
                System.out.println("Comprimindo arquivo...\n");
                // Comprimir arquivos
                // Huffman
                long iHuffComp = System.currentTimeMillis();
                try {
                   String arquivo = new Scanner(new File(basefile)).useDelimiter("\\\\Z").next();
-                  // System.out.println(arquivo);
                   String compressedString = huffman.compress(arquivo);
                   huffman.writeCompressedFile(compressedString);
                   System.out.println(
@@ -272,53 +272,43 @@ public class Main {
                }
                long fHuffComp = System.currentTimeMillis() - iHuffComp;
                System.out.println("Tempo de compressão Huffman: " + fHuffComp + "ms");
-
-
-               // // Huffman Compression
-               // long huffmanCompressStart = System.currentTimeMillis();
-               // File pokemonDB = new File("./pokemonDB");
-               // byte[] bytes = Files.readAllBytes(pokemonDB.toPath());
-               // HuffmanCompression.compress(bytes);
-
                /*
-                * ----------------- //
-                * // "Código do gabigol"
-                * long iLzwDesc = System.currentTimeMillis();
-                * try {
-                * String fileName = "baseLzwCompressao";
-                * byte[] compressedFileContent = Files.readAllBytes(Paths.get(fileName));
-                * int[] compressedData = new int[compressedFileContent.length / 2];
-                * for (int i = 0; i < compressedData.length; i++) {
-                * compressedData[i] = ((compressedFileContent[2 * i] & 0xFF) << 8) |
-                * (compressedFileContent[2 * i + 1] & 0xFF);
-                * }
-                * 
-                * byte[] decompressed = LZW.decompress(compressedData);
-                * Files.write(Paths.get(fileName), decompressed);
-                * } catch (Exception e){
-                * System.out.println("Erro na descompressão LZW");
-                * }
-                * long fLzwDesc = System.currentTimeMillis()-iLzwDesc;
-                * System.out.println("Tempo de descompressão LZW: "+fLzwDesc+"ms");
-                * 
-                * break;
+                * -----------------
                 */
+               // "Código do gabigol"
+               long iLzwComp = System.currentTimeMillis();
+               try {
+                  String arqComprimido = "baseLzwCompressao" + version++;
+                  byte[] fileContent = Files.readAllBytes(Paths.get(basefile));
+                  int[] compressed = LZW.compress(fileContent);
+                  byte[] compressedBytes = new byte[compressed.length * 2];
+                  for (int i = 0; i < compressed.length; i++) {
+                     compressedBytes[2 * i] = (byte) (compressed[i] >> 8);
+                     compressedBytes[2 * i + 1] = (byte) (compressed[i] & 0xFF);
+                  }
+                  Files.write(Paths.get(arqComprimido), compressedBytes);
+                  System.out
+                        .println("Arquivo da sequência compactada gerado: baseLzwCompressao" + (version - 1) + ".txt");
+               } catch (Exception e) {
+                  System.out.println("Erro na compressão LZW");
+               }
+               long fLzwComp = System.currentTimeMillis() - iLzwComp;
+               System.out.println("Tempo de compressão LZW: " + fLzwComp + "ms");
+
+               // Comparar Tempo de Compressão dos dois Algoritmos
+
+               if (fHuffComp < fLzwComp) {
+                  System.out.print("Compressão Huffman foi ");
+                  System.out.printf("%.2f ", (1.0 - ((float) fHuffComp / (float) fLzwComp)) * 100);
+                  System.out.println("% mais eficiente");
+               } else {
+                  System.out.print("Compressão LZW foi ");
+                  System.out.printf("%.2f " + (1.0 - ((float) fLzwComp / (float) fHuffComp)) * 100);
+                  System.out.println("% mais eficiente");
+               }
+               System.out.println("\nArquivo comprimido com sucesso!");
                break;
             case 6:
-
-//                try {
-//                   String compressedString = HuffmanCompression.readCompressedFile(0);
-//                   byte[] decompressedData = HuffmanCompression.decompress(compressedString);
-//                   Files.write(Paths.get("baseHuffmanDecompressao" + 0 + ".txt"), decompressedData);
-//                   System.out.println("Arquivo da sequência descompactada gerado: baseHuffmanDecompressao" + 0 + ".txt");
-//                   // CompressionUtility.decompressFile("pokemonDB", "LZW", version);
-//                } catch (Exception e) {
-//                   System.out.println("Erro na descompressão Huffman");
-//                   // TODO: handle exception
-//                }
-//                // byte[] decompressed = LZW.decompress(compressedData);
-//                // Files.write(Paths.get(fileName), decompressed);
-
                System.out.print("Qual a versão do arquivo que deseja descomprimir? ");
                int versao = fetch.nextInt();
                System.out.println("Descomprimindo arquivo...\n");
@@ -348,8 +338,8 @@ public class Main {
                            | (compressedFileContent[2 * i + 1] & 0xFF);
                   }
 
-                  // byte[] decompressed = LZW.decompress(compressedData);
-                  // Files.write(Paths.get(fileName), decompressed);
+                  byte[] decompressed = LZW.decompress(compressedData);
+                  Files.write(Paths.get(fileName), decompressed);
                } catch (Exception e) {
                   System.out.println("Erro na descompressão LZW");
                }
@@ -367,12 +357,70 @@ public class Main {
                System.out.println("\nArquivo descomprimido com sucesso!");
                break;
             case 7:
-            
+               fetch.nextLine();
+               System.out.print("Digite o nome do Pokemon que deseja encontrar: ");
+               String pattern = fetch.nextLine();
+               // Procura do game
+               long iKmpComp = 0;
+               long iBoyerComp = 0;
+               try {
+                  String caminhoArquivo = basefile;
+                  String conteudoBanco = lerArquivoBD(caminhoArquivo);
+                  // KMP.
+                  iKmpComp = System.currentTimeMillis();
+                  // Pesquisa no KMP
+                  kmp.search(conteudoBanco, pattern);
+                  iKmpComp = System.currentTimeMillis() - iKmpComp;
+                  // Boyer Moore.
+                  BoyerMoore bm = new BoyerMoore();
+                  System.out.print(
+                        "Use a heurística do mau caractere ou do sufixo bom? (1 - Sufixo bom; 2 - Mau caractere): ");
+                  int heuristica = fetch.nextInt();
+                  boolean charOrSufix = false;
+                  if (heuristica == 2) {
+                     charOrSufix = true;
+                  }
+                  iBoyerComp = System.currentTimeMillis();
+                  // Pesquisa no Boyer Moore.
+                  List<Integer> occurrences = bm.search(conteudoBanco, pattern, charOrSufix);
+                  if (occurrences.isEmpty()) {
+                     System.out.println("Padrão não encontrado no texto.");
+                  } else {
+                     System.out.println("Padrão encontrado nos índices: " + occurrences);
+                  }
+                  iBoyerComp = System.currentTimeMillis() - iBoyerComp;
+               } catch (Exception e) {
+                  // System.out.println(e.getLocalizedMessage());
+                  System.out.println("Erro no padrão");
+               }
+               // Comparação no tempo de pesquisa.
+               System.out.println("Tempo de pesquisa KMP: " + iKmpComp + "ms");
+               System.out.println("Tempo de pesquisa BoyerMoore: " + iBoyerComp + "ms");
+               System.out.println();
+               if (iKmpComp < iBoyerComp) {
+                  System.out.println("KMP foi mais eficiente");
+               } else {
+                  System.out.println("BoyerMoore foi mais eficiente");
+               }
                break;
          }
 
       }
       fetch.close();
+   }
+
+   public static String lerArquivoBD(String caminhoArquivo) throws IOException {
+      StringBuilder conteudo = new StringBuilder();
+
+      BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo));
+      String linha;
+      while ((linha = leitor.readLine()) != null) {
+         conteudo.append(linha);
+         conteudo.append("\n"); // Adicione uma quebra de linha, se necessário
+      }
+      leitor.close();
+
+      return conteudo.toString();
    }
 
 }

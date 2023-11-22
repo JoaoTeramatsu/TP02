@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-
 class HuffmanNode {
    int frequency;
    char character;
