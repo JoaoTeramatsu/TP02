@@ -277,36 +277,7 @@ public class Main {
                }
                long fHuffComp = System.currentTimeMillis() - iHuffComp;
                System.out.println("Tempo de compressão Huffman: " + fHuffComp + "ms");
-               //// LZW ****
-               //  long iLzwComp = System.currentTimeMillis();
-               // try {
-                  // String baseIncial = "BancoDados";
-                  // String arqComprimido = "baseLzwCompressao" + version++;
-                  // byte[] fileContent = Files.readAllBytes(Paths.get(baseIncial));
-                  // int[] compressed = LZW.compress(fileContent);
-                  // byte[] compressedBytes = new byte[compressed.length * 2];
-                  // for (int i = 0; i < compressed.length; i++) {
-                  // compressedBytes[2 * i] = (byte) (compressed[i] >> 8);
-                  // compressedBytes[2 * i + 1] = (byte) (compressed[i] & 0xFF);
-                  // }
-                  // Files.write(Paths.get(arqComprimido), compressedBytes);
-               //    System.out
-               //          .println("Arquivo da sequência compactada gerado: baseLzwCompressao" + (version - 1) + ".txt");
-               // } catch (Exception e) {
-               //    System.out.println("Erro na compressão LZW");
-               // }
-               // long fLzwComp = System.currentTimeMillis() - iLzwComp;
-               // System.out.println("Tempo de compressão LZW: " + fLzwComp + "ms");
-               // if (fHuffComp < fLzwComp) {
-               //    System.out.print("Compressão Huffman foi ");
-               //    System.out.printf("%.2f ", (1.0 - ((float) fHuffComp / (float) fLzwComp)) * 100);
-               //    System.out.println("% mais eficiente");
-               // } else {
-               //    System.out.print("Compressão LZW foi ");
-               //    System.out.printf("%.2f " + (1.0 - ((float) fLzwComp / (float) fHuffComp)) * 100);
-               //    System.out.println("% mais eficiente");
-               // }
-               // System.out.println("\nArquivo comprimido com sucesso!");
+
                break;
 
             case 6:
