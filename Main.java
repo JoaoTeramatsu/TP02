@@ -64,7 +64,9 @@ public class Main {
          System.out.println("4- Delete");
          System.out.println("5- Compress");
          System.out.println("6- Decompress");
-         System.out.println("7- Sair");
+         System.out.println("7- Pesquisar Padrão");
+         System.out.println("8- Sair");
+
          choice = fetch.nextInt();
 
          switch (choice) {
@@ -418,7 +420,11 @@ public class Main {
                } else {
                   System.out.println("BoyerMoore foi mais eficiente");
                }
+            case 8:
+               System.out.print("\nSalvando arquivo e encerrando programa...");
                break;
+            default:
+               System.out.println("Digite uma opção válida!\n\n");
          }
 
       }
