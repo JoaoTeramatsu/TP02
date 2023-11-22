@@ -315,12 +315,12 @@ public class Main {
 
                if (fHuffComp < fLzwComp) {
                   System.out.print("Compressão Huffman foi ");
-                  System.out.printf("%.2f ", (1.0 - ((float) fHuffComp / (float) fLzwComp)) * 100);
-                  System.out.println("% mais eficiente");
+                  System.out.printf("%.2f%% mais eficiente%n", (1.0 - ((float) fHuffComp / (float) fLzwComp)) * 100);
+                  // System.out.println("% mais eficiente");
                } else {
                   System.out.print("Compressão LZW foi ");
-                  System.out.printf("%.2f " + (1.0 - ((float) fLzwComp / (float) fHuffComp)) * 100);
-                  System.out.println("% mais eficiente");
+                  System.out.printf("%.2f%% mais eficiente%n", (1.0 - ((float) fLzwComp / (float) fHuffComp)) * 100);
+                  // System.out.println("% mais eficiente");
                }
                System.out.println("\nArquivo comprimido com sucesso!");
                break;
@@ -363,12 +363,12 @@ public class Main {
                System.out.println("Tempo de descompressão LZW: " + fLzwDesc + "ms");
                if (fHuffDesc < fLzwDesc) {
                   System.out.print("Descompressão Huffman foi ");
-                  System.out.printf("%.2f " + (1.0 - ((float) fHuffDesc / (float) fLzwDesc)) * 100);
-                  System.out.println("% mais eficiente");
+                  System.out.printf("%.2f%% mais eficiente%n", (1.0 - ((float) fHuffDesc / (float) fLzwDesc)) * 100);
+                  // System.out.println("% mais eficiente");
                } else {
                   System.out.print("Descompressão LZW foi ");
-                  System.out.printf("%.2f ", (1.0 - ((float) fLzwDesc / (float) fHuffDesc)) * 100);
-                  System.out.println("% mais eficiente");
+                  System.out.printf("%.2f%% mais eficiente%n", (1.0 - ((float) fLzwDesc / (float) fHuffDesc)) * 100);
+                  // System.out.println("% mais eficiente");
                }
                System.out.println("\nArquivo descomprimido com sucesso!");
                break;
